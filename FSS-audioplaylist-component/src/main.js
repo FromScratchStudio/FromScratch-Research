@@ -1,0 +1,295 @@
+import defaultPlaylistData from './data/playlist.json';
+
+const appRoot = document.querySelector('[data-component="audio-playlist"]');
+
+if (!appRoot) {
+  throw new Error('Audio playlist root element not found.');
+}
+
+const elements = {
+  audio: appRoot.querySelector('[data-role="audio"]'),
+  title: appRoot.querySelector('[data-role="title"]'),
+  artist: appRoot.querySelector('[data-role="artist"]'),
+  cover: appRoot.querySelector('[data-role="cover"]'),
+  elapsed: appRoot.querySelector('[data-role="elapsed"]'),
+  duration: appRoot.querySelector('[data-role="duration"]'),
+  seek: appRoot.querySelector('[data-role="seek"]'),
+  volume: appRoot.querySelector('[data-role="volume"]'),
+  playlist: appRoot.querySelector('[data-role="playlist"]'),
+  emptyState: appRoot.querySelector('[data-role="empty-state"]'),
+  playlistTitle: appRoot.querySelector('[data-role="playlist-title"]'),
+  controls: {
+    play: appRoot.querySelector('[data-action="play"]'),
+    prev: appRoot.querySelector('[data-action="prev"]'),
+    next: appRoot.querySelector('[data-action="next"]'),
+    reload: appRoot.querySelector('[data-action="reload"]')
+  }
+};
+
+const state = {
+  playlist: [],
+  currentIndex: 0,
+  isPlaying: false,
+  lastSource: null
+};
+
+function formatTime(seconds) {
+  if (Number.isNaN(seconds) || seconds === Infinity) {
+    return '0:00';
+  }
+  const wholeSeconds = Math.max(0, Math.floor(seconds));
+  const minutes = Math.floor(wholeSeconds / 60);
+  const remaining = wholeSeconds % 60;
+  return `${minutes}:${String(remaining).padStart(2, '0')}`;
+}
+
+function setAccentColor(color) {
+  if (!color) return;
+  document.documentElement.style.setProperty('--accent', color);
+}
+
+function updateNowPlaying(track) {
+  elements.title.textContent = track?.title ?? 'Unknown title';
+  elements.artist.textContent = track?.artist ?? '';
+  if (track?.cover) {
+    elements.cover.hidden = false;
+    elements.cover.src = track.cover;
+    elements.cover.alt = `${track.title} cover art`;
+  } else {
+    elements.cover.hidden = true;
+    elements.cover.removeAttribute('src');
+    elements.cover.alt = '';
+  }
+}
+
+function renderPlaylist(tracks) {
+  elements.playlist.innerHTML = '';
+  if (!Array.isArray(tracks) || tracks.length === 0) {
+    elements.emptyState.hidden = false;
+    return;
+  }
+
+  elements.emptyState.hidden = true;
+  const template = document.querySelector('#track-template');
+
+  tracks.forEach((track, index) => {
+    const clone = template.content.firstElementChild.cloneNode(true);
+    const button = clone.querySelector('button');
+    button.dataset.index = String(index);
+    button.querySelector('[data-field="title"]').textContent = track.title;
+    button.querySelector('[data-field="artist"]').textContent = track.artist;
+    button.querySelector('[data-field="duration"]').textContent = track.duration ? formatTime(track.duration) : '-';
+    button.addEventListener('click', () => {
+      if (state.currentIndex === index) {
+        togglePlayback();
+      } else {
+        selectTrack(index, { autoplay: true });
+      }
+    });
+    elements.playlist.appendChild(clone);
+  });
+}
+
+function highlightActiveTrack() {
+  const buttons = elements.playlist.querySelectorAll('button');
+  buttons.forEach((button) => {
+    const isActive = Number(button.dataset.index) === state.currentIndex;
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function setPlayingState(playing) {
+  state.isPlaying = playing;
+  elements.controls.play.textContent = playing ? 'Pause' : 'Play';
+  elements.controls.play.setAttribute('aria-label', playing ? 'Pause playback' : 'Play track');
+}
+
+function clone(data) {
+  return JSON.parse(JSON.stringify(data));
+}
+
+function updateProgress() {
+  const { currentTime, duration } = elements.audio;
+  elements.elapsed.textContent = formatTime(currentTime);
+  elements.duration.textContent = formatTime(duration);
+  if (!Number.isNaN(duration) && duration > 0) {
+    const progress = (currentTime / duration) * 100;
+    elements.seek.value = String(progress);
+  } else {
+    elements.seek.value = '0';
+  }
+}
+
+function selectTrack(index, options = {}) {
+  const track = state.playlist[index];
+  if (!track) {
+    return;
+  }
+  state.currentIndex = index;
+  elements.audio.src = track.src;
+  elements.audio.load();
+  updateNowPlaying(track);
+  highlightActiveTrack();
+  updateProgress();
+  if (options.autoplay) {
+    elements.audio.play().catch(() => {
+      setPlayingState(false);
+    });
+  }
+}
+
+function play() {
+  if (!elements.audio.src) return;
+  elements.audio.play().catch(() => {
+    setPlayingState(false);
+  });
+}
+
+function pause() {
+  elements.audio.pause();
+}
+
+function togglePlayback() {
+  if (!elements.audio.src) {
+    selectTrack(0, { autoplay: true });
+    return;
+  }
+  if (elements.audio.paused) {
+    play();
+  } else {
+    pause();
+  }
+}
+
+function playNext() {
+  if (state.playlist.length === 0) return;
+  const nextIndex = (state.currentIndex + 1) % state.playlist.length;
+  selectTrack(nextIndex, { autoplay: state.isPlaying });
+}
+
+function playPrevious() {
+  if (state.playlist.length === 0) return;
+  const prevIndex = (state.currentIndex - 1 + state.playlist.length) % state.playlist.length;
+  selectTrack(prevIndex, { autoplay: state.isPlaying });
+}
+
+function onSeekInput(event) {
+  const { duration } = elements.audio;
+  if (Number.isNaN(duration) || duration === 0) return;
+  const ratio = Number(event.target.value) / 100;
+  elements.audio.currentTime = ratio * duration;
+}
+
+function onVolumeInput(event) {
+  const value = Number(event.target.value) / 100;
+  elements.audio.volume = Math.min(1, Math.max(0, value));
+}
+
+function resolveSource(source) {
+  if (source instanceof URL) {
+    return source.toString();
+  }
+  if (typeof source === 'string') {
+    return source.startsWith('http')
+      ? source
+      : new URL(source, window.location.href).toString();
+  }
+  return null;
+}
+
+async function loadPlaylist(source) {
+  if (!source) {
+    return clone(defaultPlaylistData);
+  }
+
+  const resolved = resolveSource(source);
+
+  if (!resolved) {
+    throw new Error('Invalid playlist source.');
+  }
+
+  const response = await fetch(resolved, { headers: { Accept: 'application/json' } });
+  if (!response.ok) {
+    throw new Error(`Unable to load playlist: ${response.status} ${response.statusText}`);
+  }
+  return response.json();
+}
+
+function applyPlaylist(payload) {
+  const tracks = Array.isArray(payload) ? payload : payload.tracks;
+  if (!Array.isArray(tracks)) {
+    throw new Error('Playlist data is not an array.');
+  }
+
+  state.playlist = tracks;
+  state.currentIndex = 0;
+  renderPlaylist(tracks);
+  highlightActiveTrack();
+  setAccentColor(payload.accentColor);
+  elements.playlistTitle.textContent = payload.name ?? 'Playlist';
+  if (tracks.length > 0) {
+    selectTrack(0, { autoplay: false });
+  } else {
+    updateNowPlaying(null);
+  }
+}
+
+async function reloadPlaylist(source) {
+  const targetSource = typeof source === 'undefined' ? state.lastSource : source;
+  const normalizedSource = targetSource instanceof URL ? targetSource.toString() : targetSource;
+
+  appRoot.classList.add('is-loading');
+  try {
+    const payload = await loadPlaylist(normalizedSource);
+    applyPlaylist(payload);
+    state.lastSource = normalizedSource ?? null;
+  } catch (error) {
+    console.error(error);
+    elements.emptyState.hidden = false;
+    elements.emptyState.textContent = 'Failed to load playlist.';
+  } finally {
+    appRoot.classList.remove('is-loading');
+  }
+}
+
+function attachEvents() {
+  elements.controls.play.addEventListener('click', togglePlayback);
+  elements.controls.next.addEventListener('click', playNext);
+  elements.controls.prev.addEventListener('click', playPrevious);
+  elements.controls.reload.addEventListener('click', () => reloadPlaylist());
+  elements.seek.addEventListener('input', onSeekInput);
+  elements.volume.addEventListener('input', onVolumeInput);
+
+  elements.audio.addEventListener('play', () => setPlayingState(true));
+  elements.audio.addEventListener('pause', () => setPlayingState(false));
+  elements.audio.addEventListener('timeupdate', updateProgress);
+  elements.audio.addEventListener('loadedmetadata', updateProgress);
+  elements.audio.addEventListener('ended', playNext);
+}
+
+function exposePublicApi() {
+  window.FSSAudioPlaylist = {
+    async load(source) {
+      await reloadPlaylist(source);
+    },
+    setAccent(color) {
+      setAccentColor(color);
+    },
+    setPlaylist(tracks) {
+      state.lastSource = null;
+      applyPlaylist({ name: 'Custom playlist', accentColor: null, tracks });
+    },
+    play,
+    pause,
+    next: playNext,
+    previous: playPrevious
+  };
+}
+
+(function initialise() {
+  appRoot.classList.add('is-loading');
+  elements.audio.volume = 0.8;
+  attachEvents();
+  exposePublicApi();
+  reloadPlaylist();
+})();

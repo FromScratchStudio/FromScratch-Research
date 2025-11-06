@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FSS Audio Playlist</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <noscript>This player needs JavaScript to load the playlist.</noscript>
+    <main class="app" data-component="audio-playlist">
+      <header class="app__header">
+        <h1 class="app__title">Audio Playlist</h1>
+        <p class="app__subtitle">Lightweight playlist powered by a JSON feed.</p>
+      </header>
+      <section class="player" aria-label="Audio player">
+        <div class="player__now">
+          <img class="player__cover" alt="" data-role="cover" hidden />
+          <div class="player__meta">
+            <h2 class="player__track" data-role="title">Loading...</h2>
+            <p class="player__artist" data-role="artist"></p>
+          </div>
+        </div>
+        <audio data-role="audio" preload="metadata"></audio>
+        <div class="player__controls">
+          <button type="button" class="control control--prev" data-action="prev" aria-label="Play previous track">Prev</button>
+          <button type="button" class="control control--play" data-action="play" aria-label="Play or pause">Play</button>
+          <button type="button" class="control control--next" data-action="next" aria-label="Play next track">Next</button>
+        </div>
+        <div class="player__timeline">
+          <span class="player__time" data-role="elapsed">0:00</span>
+          <input type="range" class="player__seek" data-role="seek" min="0" max="100" value="0" aria-label="Seek timeline" />
+          <span class="player__time" data-role="duration">0:00</span>
+        </div>
+        <label class="player__volume">
+          <span>Volume</span>
+          <input type="range" data-role="volume" min="0" max="100" value="80" />
+        </label>
+      </section>
+      <section class="playlist" aria-label="Playlist">
+        <header class="playlist__header">
+          <h2 class="playlist__title" data-role="playlist-title">Playlist</h2>
+          <button type="button" class="playlist__reload" data-action="reload">Reload</button>
+        </header>
+        <ul class="playlist__items" data-role="playlist"></ul>
+        <template id="track-template">
+          <li class="playlist__item">
+            <button type="button" class="playlist__itemButton">
+              <span class="playlist__itemTitle" data-field="title"></span>
+              <span class="playlist__itemArtist" data-field="artist"></span>
+              <span class="playlist__itemDuration" data-field="duration"></span>
+            </button>
+          </li>
+        </template>
+        <p class="playlist__empty" data-role="empty-state" hidden>No tracks available.</p>
+      </section>
+    </main>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

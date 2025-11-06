@@ -1,0 +1,30 @@
+{
+  "name": "Morning Focus Set",
+  "accentColor": "#38bdf8",
+  "tracks": [
+    {
+      "id": "lofi-sunrise",
+      "title": "Lo-Fi Sunrise",
+      "artist": "Still Morning",
+      "src": "https://samplelib.com/lib/preview/mp3/sample-6s.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "city-glow",
+      "title": "City Glow",
+      "artist": "Nocturnal Lines",
+      "src": "https://samplelib.com/lib/preview/mp3/sample-9s.mp3",
+      "cover": "https://images.unsplash.com/photo-1485579149621-3123dd979885?auto=format&fit=crop&w=400&q=80",
+      "duration": 9
+    },
+    {
+      "id": "late-shift",
+      "title": "Late Shift",
+      "artist": "Night Office",
+      "src": "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
+      "cover": "https://images.unsplash.com/photo-1521310192549-4ac7951413d7?auto=format&fit=crop&w=400&q=80",
+      "duration": 12
+    }
+  ]
+}
