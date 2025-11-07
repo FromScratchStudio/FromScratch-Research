@@ -1,0 +1,31 @@
+{
+  "name": "Evening Chill Tides",
+  "accentColor": "#a855f7",
+  "tracks": [
+    {
+      "id": "violet-sway",
+      "title": "Violet Sway",
+      "artist": "Satellite Bloom",
+      "src": "https://samplelib.com/lib/preview/mp3/sample-6s.mp3",
+      "cover": "https://images.unsplash.com/photo-1494232410401-ad00d5433cfa?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "hazy-harbor",
+      "title": "Hazy Harbor",
+      "artist": "Analog Sleep",
+      "src": "https://samplelib.com/lib/preview/mp3/sample-30s.mp3",
+      "cover": "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=400&q=80",
+      "duration": 30
+    },
+    {
+      "id": "night-ferry",
+      "title": "Night Ferry",
+      "artist": "Mute Season",
+      "src": "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
+      "cover": "https://images.unsplash.com/photo-1503220317375-aaad61436b1b?auto=format&fit=crop&w=400&q=80",
+      "duration": 12
+    }
+  ]
+}
+

@@ -1,0 +1,31 @@
+{
+  "name": "Deep Work Capsule",
+  "accentColor": "#f97316",
+  "tracks": [
+    {
+      "id": "synth-coast",
+      "title": "Synth Coast",
+      "artist": "Aurora Lines",
+      "src": "https://samplelib.com/lib/preview/mp3/sample-15s.mp3",
+      "cover": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=400&q=80",
+      "duration": 15
+    },
+    {
+      "id": "amber-lights",
+      "title": "Amber Lights",
+      "artist": "Nite Dept",
+      "src": "https://samplelib.com/lib/preview/mp3/sample-12s.mp3",
+      "cover": "https://images.unsplash.com/photo-1470229538611-16ba8c7ffbd7?auto=format&fit=crop&w=400&q=80",
+      "duration": 12
+    },
+    {
+      "id": "drift",
+      "title": "Drift Theory",
+      "artist": "City Field",
+      "src": "https://samplelib.com/lib/preview/mp3/sample-9s.mp3",
+      "cover": "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=400&q=80",
+      "duration": 9
+    }
+  ]
+}
+

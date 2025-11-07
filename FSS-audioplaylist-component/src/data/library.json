@@ -1,0 +1,24 @@
+[
+  {
+    "id": "morning-focus",
+    "name": "Morning Focus",
+    "description": "Gentle sunrise beats to start deep work.",
+    "file": "./data/playlist.json",
+    "tag": "Focus"
+  },
+  {
+    "id": "deep-work",
+    "name": "Deep Work Capsule",
+    "description": "Warm analog pulses for sustained flow.",
+    "file": "./data/deep-work.json",
+    "tag": "Flow"
+  },
+  {
+    "id": "evening-chill",
+    "name": "Evening Chill Tides",
+    "description": "Dreamy downtempo for winding down.",
+    "file": "./data/evening-chill.json",
+    "tag": "Night"
+  }
+]
+

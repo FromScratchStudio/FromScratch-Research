@@ -1,9 +1,26 @@
-import defaultPlaylistData from './data/playlist.json';
 import playlistLibrary from './data/library.json';
+
+import defaultPlaylistData from './data/playlist.json';
+import playlistData from './data/playlist.json';
+import deepworkData from './data/deep-work.json';
+import eveningchillData from './data/evening-chill.json';
+
+function getImportPlaylistData(entry) {
+  switch (entry.file) {
+    case './data/playlist.json':
+      return playlistData;
+    case './data/deep-work.json':
+      return deepworkData;
+    case './data/evening-chill.json':
+      return eveningchillData;
+    default:
+      return defaultPlaylistData;
+  }
+}
 
 const playlistCatalog = playlistLibrary.map((entry) => ({
   ...entry,
-  source: entry.file ? new URL(entry.file, import.meta.url).toString() : null
+  source: entry.file ? getImportPlaylistData(entry) : null
 }));
 
 const appRoot = document.querySelector('[data-component="audio-playlist"]');
@@ -301,7 +318,8 @@ function resolveSource(source) {
   if (typeof source === 'string') {
     return source.startsWith('http')
       ? source
-      : new URL(source, window.location.href).toString();
+       : new URL(source, window.location.href).toString();
+      //: new URL(source, import.meta.url).toString();
   }
   return null;
 }
@@ -311,17 +329,18 @@ async function loadPlaylist(source) {
     return clone(defaultPlaylistData);
   }
 
-  const resolved = resolveSource(source);
+  return clone(source);
+  // const resolved = resolveSource(source);
 
-  if (!resolved) {
-    throw new Error('Invalid playlist source.');
-  }
+  // if (!resolved) {
+  //   throw new Error('Invalid playlist source.');
+  // }
 
-  const response = await fetch(resolved, { headers: { Accept: 'application/json' } });
-  if (!response.ok) {
-    throw new Error(`Unable to load playlist: ${response.status} ${response.statusText}`);
-  }
-  return response.json();
+  // const response = await fetch(resolved, { headers: { Accept: 'application/json' } });
+  // if (!response.ok) {
+  //   throw new Error(`Unable to load playlist: ${response.status} ${response.statusText}`);
+  // }
+  // return response.json();
 }
 
 function applyPlaylist(payload) {
@@ -346,6 +365,7 @@ function applyPlaylist(payload) {
 async function reloadPlaylist(source) {
   const targetSource = typeof source === 'undefined' ? state.lastSource : source;
   const normalizedSource = targetSource instanceof URL ? targetSource.toString() : targetSource;
+  //const normalizedSource = targetSource instanceof URL ? targetSource.toString() : new URL(targetSource, import.meta.url);
 
   appRoot.classList.add('is-loading');
   try {

@@ -1,32 +1,24 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<!DOCTYPE html><html lang="en"><head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>FSS Audio Playlist</title>
-    <link rel="stylesheet" href="./src/styles.css" />
+    <link rel="stylesheet" href="FSS-audioplaylist-component.92248777.css">
   </head>
   <body>
     <noscript>This player needs JavaScript to load the playlist.</noscript>
     <main class="app" data-component="audio-playlist">
       <header class="app__header">
         <div class="app__heading">
-          <h1 class="app__title">FromScratch x SQD</h1>
-          <p class="app__subtitle">Playlists.</p>
+          <h1 class="app__title">Audio Playlist</h1>
+          <p class="app__subtitle">Lightweight playlist powered by a JSON feed.</p>
         </div>
-        <button
-          type="button"
-          class="app__toggle"
-          data-action="toggle-view"
-          aria-label="Collapse playlist"
-          aria-expanded="true"
-        >
+        <button type="button" class="app__toggle" data-action="toggle-view" aria-label="Collapse playlist" aria-expanded="true">
           Collapse
         </button>
       </header>
       <section class="player" aria-label="Audio player">
         <div class="player__now">
-          <img class="player__cover" alt="" data-role="cover" hidden />
+          <img class="player__cover" alt="" data-role="cover" hidden="">
           <div class="player__meta">
             <h2 class="player__track" data-role="title">Loading...</h2>
             <p class="player__artist" data-role="artist"></p>
@@ -40,12 +32,12 @@
         </div>
         <div class="player__timeline">
           <span class="player__time" data-role="elapsed">0:00</span>
-          <input type="range" class="player__seek" data-role="seek" min="0" max="100" value="0" aria-label="Seek timeline" />
+          <input type="range" class="player__seek" data-role="seek" min="0" max="100" value="0" aria-label="Seek timeline">
           <span class="player__time" data-role="duration">0:00</span>
         </div>
         <label class="player__volume">
           <span>Volume</span>
-          <input type="range" data-role="volume" min="0" max="100" value="80" />
+          <input type="range" data-role="volume" min="0" max="100" value="80">
         </label>
       </section>
       <section class="playlist" aria-label="Playlist">
@@ -63,7 +55,7 @@
             </button>
           </li>
         </template>
-        <p class="playlist__empty" data-role="empty-state" hidden>No tracks available.</p>
+        <p class="playlist__empty" data-role="empty-state" hidden="">No tracks available.</p>
       </section>
       <section class="library" data-component="playlist-library" data-view="grid" aria-label="Playlist library">
         <header class="library__header">
@@ -92,6 +84,7 @@
         </template>
       </section>
     </main>
-    <script type="module" src="./src/main.js"></script>
-  </body>
-</html>
+    <script type="module" src="FSS-audioplaylist-component.0fd2803c.js"></script>
+  
+
+</body></html>
