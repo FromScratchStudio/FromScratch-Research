@@ -1,3 +1,8 @@
+/* Fonts imported       */
+ @import url('https://fonts.googleapis.com/css2?family=Caramel&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Rajdhani&display=swap');
+/************************/
+
 :root {
   color-scheme: light;
   --accent: #111827;
@@ -8,7 +13,8 @@
   --muted: #6b7280;
   --border: rgba(15, 23, 42, 0.08);
   --radius: 18px;
-  font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  /*font-family: "Inter", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;*/
+  font-family: 'Rajdhani', cursive;
 }
 
 *,
@@ -22,116 +28,130 @@ body {
   min-height: 100vh;
   background: var(--background);
   color: var(--text);
+  overflow: hidden;
+  font-size: large;
+  font-family: 'Rajdhani', cursive;
 }
 
-.app {
+.workspace {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.12), transparent 40%),
+    var(--background);
+  font-family: 'Rajdhani', cursive;
+}
+
+.panel {
   position: fixed;
-  bottom: 1rem;
-  left: 1rem;
-  width: clamp(320px, 30vw, 420px);
-  max-width: calc(100% - 2rem);
-  max-height: calc(100vh - 2rem);
-  resize: both;
-  overflow: auto;
-  z-index: 1000;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1.25rem;
-  box-shadow: 0 20px 35px rgba(15, 23, 42, 0.15);
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  padding: 1rem 1.25rem;
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12);
+  min-width: 280px;
+  max-width: 480px;
+  resize: both;
+  overflow: auto;
+  touch-action: none;
+  transition: box-shadow 0.2s ease;
+  z-index: 10;
+  font-family: 'Rajdhani', cursive;
 }
 
-.app.is-dragging {
-  box-shadow: 0 25px 45px rgba(15, 23, 42, 0.25);
+.panel.is-dragging {
+  box-shadow: 0 25px 55px rgba(15, 23, 42, 0.2);
   cursor: grabbing;
 }
 
-.app__header {
+.panel.is-hidden {
+  display: none;
+}
+
+.panel[data-panel="player"] {
+  bottom: 1.5rem;
+  left: 1.5rem;
+  width: clamp(300px, 26vw, 420px);
+}
+
+.panel[data-panel="tracks"] {
+  bottom: 1.5rem;
+  right: 1.5rem;
+  width: clamp(320px, 28vw, 460px);
+  max-height: calc(100vh - 3rem);
+}
+
+.panel[data-panel="library"] {
+  top: 1.5rem;
+  right: 1.5rem;
+  width: clamp(320px, 30vw, 480px);
+  max-height: calc(100vh - 3rem);
+}
+
+.panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);
   cursor: grab;
   user-select: none;
-  touch-action: none;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
 }
 
-.app__heading {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.app.is-dragging .app__header {
-  cursor: grabbing;
-}
-
-.app__title {
+.panel__eyebrow {
   margin: 0;
-  font-size: clamp(1rem, 2vw, 1.5rem);
-  font-weight: 700;
-}
-
-.app__subtitle {
-  margin: 0.35rem 0 0;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.68rem;
   color: var(--muted);
-  font-size: 0.95rem;
 }
 
-.app__toggle {
-  margin-left: auto;
-  align-self: center;
+.panel__title {
+  margin: 0.2rem 0 0;
+  font-size: 1.2rem;
+  font-family: 'Rajdhani', cursive;
+}
+
+.panel__headerActions {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.panel__toggle,
+.panel__action {
   border-radius: 999px;
   border: 1px solid var(--border);
-  padding: 0.4rem 0.9rem;
-  font-size: 0.85rem;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   background: #fff;
-  color: var(--text);
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  font-family: 'Rajdhani', cursive;
 }
 
-.app__toggle:hover,
-.app__toggle:focus-visible {
-  border-color: rgba(15, 23, 42, 0.3);
-  background: var(--surface-alt);
+.panel__toggle[aria-pressed="true"] {
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
+  font-family: 'Rajdhani', cursive;
 }
 
-.app.is-collapsed .playlist {
-  display: none;
-}
-
-.app.is-collapsed .library {
-  display: none;
-}
-
-.app.is-collapsed {
-  width: clamp(280px, 22vw, 360px);
-}
-
-.app.is-collapsed .app__toggle::after {
-  content: ' ▼';
-  font-size: 0.7rem;
-}
-
-.app:not(.is-collapsed) .app__toggle::after {
-  content: ' ▲';
-  font-size: 0.7rem;
+.panel__toggle:hover,
+.panel__action:hover,
+.panel__toggle:focus-visible,
+.panel__action:focus-visible {
+  border-color: rgba(15, 23, 42, 0.35);
 }
 
 .player {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 0.5rem 0;
+  padding-top: 1rem;
 }
 
 .player__now {
@@ -184,6 +204,7 @@ body {
   letter-spacing: 0.02em;
   cursor: pointer;
   transition: transform 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  font-family: 'Rajdhani', cursive;
 }
 
 .control:hover,
@@ -243,6 +264,7 @@ body {
   letter-spacing: 0.02em;
   text-transform: uppercase;
   color: var(--muted);
+  font-family: 'Rajdhani', cursive;
 }
 
 .playlist__reload {
@@ -264,6 +286,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  font-family: 'Rajdhani', cursive;
 }
 
 .playlist__itemButton {
@@ -279,6 +302,7 @@ body {
   text-align: left;
   cursor: pointer;
   transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+  font-family: 'Rajdhani', cursive;
 }
 
 .playlist__itemButton:hover,
@@ -348,6 +372,7 @@ body {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--muted);
+  font-family: 'Rajdhani', cursive;
 }
 
 .library__subtitle {
@@ -374,6 +399,7 @@ body {
   background: transparent;
   color: var(--muted);
   cursor: pointer;
+  font-family: 'Rajdhani', cursive;
 }
 
 .library__viewBtn[aria-pressed="true"] {
@@ -387,6 +413,7 @@ body {
   padding: 0;
   display: grid;
   gap: 0.5rem;
+  font-family: 'Rajdhani', cursive;
 }
 
 .library[data-view="grid"] .library__items {
@@ -410,6 +437,7 @@ body {
   text-align: left;
   cursor: pointer;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  font-family: 'Rajdhani', cursive;
 }
 
 .library__cardButton:hover,
@@ -456,13 +484,20 @@ body {
 }
 
 @media (max-width: 720px) {
-  .app {
+  body {
+    overflow: auto;
+  }
+
+  .workspace {
+    padding: 1rem 0;
+  }
+
+  .panel {
+    position: static;
     width: auto;
-    left: 0.5rem;
-    right: 0.5rem;
-    bottom: 0.5rem;
-    top: auto;
     max-width: none;
+    resize: none;
+    margin: 0 1rem 1rem;
   }
 
   .player__now {
@@ -484,7 +519,7 @@ body {
   }
 }
 
-[data-component="audio-playlist"].is-loading .player__track::after {
+[data-component="player-panel"].is-loading .player__track::after {
   content: "";
   display: inline-block;
   width: 0.75rem;
@@ -501,4 +536,3 @@ body {
     transform: rotate(1turn);
   }
 }
-

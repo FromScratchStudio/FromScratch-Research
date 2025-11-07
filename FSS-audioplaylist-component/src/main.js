@@ -1,59 +1,59 @@
 import playlistLibrary from './data/library.json';
-
 import defaultPlaylistData from './data/playlist.json';
-import playlistData from './data/playlist.json';
-import deepworkData from './data/deep-work.json';
-import eveningchillData from './data/evening-chill.json';
+import deepWorkData from './data/deep-work.json';
+import eveningChillData from './data/evening-chill.json';
 
-function getImportPlaylistData(entry) {
-  switch (entry.file) {
-    case './data/playlist.json':
-      return playlistData;
-    case './data/deep-work.json':
-      return deepworkData;
-    case './data/evening-chill.json':
-      return eveningchillData;
-    default:
-      return defaultPlaylistData;
-  }
-}
+const playlistDataMap = {
+  './data/playlist.json': defaultPlaylistData,
+  './data/deep-work.json': deepWorkData,
+  './data/evening-chill.json': eveningChillData
+};
 
 const playlistCatalog = playlistLibrary.map((entry) => ({
   ...entry,
-  source: entry.file ? getImportPlaylistData(entry) : null
+  source: entry.file ? playlistDataMap[entry.file] ?? defaultPlaylistData : null
 }));
 
-const appRoot = document.querySelector('[data-component="audio-playlist"]');
+const panels = {
+  player: document.querySelector('[data-component="player-panel"]'),
+  tracks: document.querySelector('[data-panel="tracks"]'),
+  library: document.querySelector('[data-panel="library"]')
+};
 
-if (!appRoot) {
-  throw new Error('Audio playlist root element not found.');
+if (!panels.player || !panels.tracks || !panels.library) {
+  throw new Error('One or more player panels are missing from the DOM.');
 }
 
+const playerPanel = panels.player;
+
 const elements = {
-  audio: appRoot.querySelector('[data-role="audio"]'),
-  title: appRoot.querySelector('[data-role="title"]'),
-  artist: appRoot.querySelector('[data-role="artist"]'),
-  cover: appRoot.querySelector('[data-role="cover"]'),
-  elapsed: appRoot.querySelector('[data-role="elapsed"]'),
-  duration: appRoot.querySelector('[data-role="duration"]'),
-  seek: appRoot.querySelector('[data-role="seek"]'),
-  volume: appRoot.querySelector('[data-role="volume"]'),
-  playlist: appRoot.querySelector('[data-role="playlist"]'),
-  emptyState: appRoot.querySelector('[data-role="empty-state"]'),
-  playlistTitle: appRoot.querySelector('[data-role="playlist-title"]'),
+  panels,
+  audio: panels.player.querySelector('[data-role="audio"]'),
+  title: panels.player.querySelector('[data-role="title"]'),
+  artist: panels.player.querySelector('[data-role="artist"]'),
+  cover: panels.player.querySelector('[data-role="cover"]'),
+  elapsed: panels.player.querySelector('[data-role="elapsed"]'),
+  duration: panels.player.querySelector('[data-role="duration"]'),
+  seek: panels.player.querySelector('[data-role="seek"]'),
+  volume: panels.player.querySelector('[data-role="volume"]'),
+  playlist: panels.tracks.querySelector('[data-role="playlist"]'),
+  emptyState: panels.tracks.querySelector('[data-role="empty-state"]'),
+  playlistTitle: panels.tracks.querySelector('[data-role="playlist-title"]'),
   library: {
-    root: appRoot.querySelector('[data-component="playlist-library"]'),
-    items: appRoot.querySelector('[data-role="library"]'),
-    template: appRoot.querySelector('#library-item-template'),
-    viewButtons: Array.from(appRoot.querySelectorAll('[data-action="library-view"]'))
+    root: panels.library,
+    items: panels.library.querySelector('[data-role="library"]'),
+    template: document.querySelector('#library-item-template'),
+    viewButtons: Array.from(panels.library.querySelectorAll('[data-action="library-view"]'))
   },
-  toggleView: appRoot.querySelector('[data-action="toggle-view"]'),
-  dragHandle: appRoot.querySelector('.app__header'),
+  panelToggles: {
+    tracks: panels.player.querySelector('[data-action="toggle-panel"][data-target="tracks"]'),
+    library: panels.player.querySelector('[data-action="toggle-panel"][data-target="library"]')
+  },
   controls: {
-    play: appRoot.querySelector('[data-action="play"]'),
-    prev: appRoot.querySelector('[data-action="prev"]'),
-    next: appRoot.querySelector('[data-action="next"]'),
-    reload: appRoot.querySelector('[data-action="reload"]')
+    play: panels.player.querySelector('[data-action="play"]'),
+    prev: panels.player.querySelector('[data-action="prev"]'),
+    next: panels.player.querySelector('[data-action="next"]'),
+    reload: panels.tracks.querySelector('[data-action="reload"]')
   }
 };
 
@@ -62,13 +62,16 @@ const state = {
   currentIndex: 0,
   isPlaying: false,
   lastSource: null,
-  isCollapsed: false,
   libraryView: 'grid',
-  selectedLibraryId: playlistCatalog[0]?.id ?? null
+  selectedLibraryId: playlistCatalog[0]?.id ?? null,
+  panelVisibility: {
+    tracks: true,
+    library: true
+  }
 };
 
-const dragState = {
-  active: false,
+const dragContext = {
+  activePanel: null,
   pointerId: null,
   offsetX: 0,
   offsetY: 0
@@ -150,19 +153,24 @@ function setPlayingState(playing) {
   elements.controls.play.setAttribute('aria-label', playing ? 'Pause playback' : 'Play track');
 }
 
-function setCollapsed(collapsed) {
-  state.isCollapsed = collapsed;
-  appRoot.classList.toggle('is-collapsed', collapsed);
-  if (elements.toggleView) {
-    elements.toggleView.textContent = collapsed ? 'Expand' : 'Collapse';
-    elements.toggleView.setAttribute('aria-expanded', String(!collapsed));
-    elements.toggleView.setAttribute('aria-label', collapsed ? 'Expand playlist' : 'Collapse playlist');
+function setPanelVisibility(panelKey, visible) {
+  if (!panels[panelKey]) {
+    return;
   }
-  requestAnimationFrame(constrainFloatingPlayer);
+  state.panelVisibility[panelKey] = visible;
+  panels[panelKey].classList.toggle('is-hidden', !visible);
+  const toggle = elements.panelToggles[panelKey];
+  if (toggle) {
+    toggle.setAttribute('aria-pressed', String(visible));
+  }
+  if (visible) {
+    requestAnimationFrame(() => constrainPanel(panels[panelKey]));
+  }
 }
 
-function toggleCollapsed() {
-  setCollapsed(!state.isCollapsed);
+function togglePanelVisibility(panelKey) {
+  const current = state.panelVisibility[panelKey];
+  setPanelVisibility(panelKey, !current);
 }
 
 function setLibraryView(view = 'grid') {
@@ -311,19 +319,6 @@ function onVolumeInput(event) {
   elements.audio.volume = Math.min(1, Math.max(0, value));
 }
 
-function resolveSource(source) {
-  if (source instanceof URL) {
-    return source.toString();
-  }
-  if (typeof source === 'string') {
-    return source.startsWith('http')
-      ? source
-       : new URL(source, window.location.href).toString();
-      //: new URL(source, import.meta.url).toString();
-  }
-  return null;
-}
-
 async function loadPlaylist(source) {
   if (!source) {
     return clone(defaultPlaylistData);
@@ -364,21 +359,20 @@ function applyPlaylist(payload) {
 
 async function reloadPlaylist(source) {
   const targetSource = typeof source === 'undefined' ? state.lastSource : source;
-  const normalizedSource = targetSource instanceof URL ? targetSource.toString() : targetSource;
-  //const normalizedSource = targetSource instanceof URL ? targetSource.toString() : new URL(targetSource, import.meta.url);
+  const resolvedSource = targetSource ?? defaultPlaylistData;
 
-  appRoot.classList.add('is-loading');
+  playerPanel.classList.add('is-loading');
   try {
-    const payload = await loadPlaylist(normalizedSource);
+    const payload = await loadPlaylist(resolvedSource);
     applyPlaylist(payload);
-    state.lastSource = normalizedSource ?? null;
+    state.lastSource = resolvedSource ?? null;
     syncLibrarySelection(state.lastSource);
   } catch (error) {
     console.error(error);
     elements.emptyState.hidden = false;
     elements.emptyState.textContent = 'Failed to load playlist.';
   } finally {
-    appRoot.classList.remove('is-loading');
+    playerPanel.classList.remove('is-loading');
   }
 }
 
@@ -396,19 +390,31 @@ function attachEvents() {
   elements.audio.addEventListener('loadedmetadata', updateProgress);
   elements.audio.addEventListener('ended', playNext);
 
-  if (elements.dragHandle) {
-    elements.dragHandle.addEventListener('pointerdown', startDrag);
-  }
-  if (elements.toggleView) {
-    elements.toggleView.addEventListener('click', toggleCollapsed);
-  }
   elements.library?.viewButtons?.forEach((button) => {
     button.addEventListener('click', () => setLibraryView(button.dataset.view));
   });
-  appRoot.addEventListener('pointermove', handleDragMove);
-  appRoot.addEventListener('pointerup', endDrag);
-  appRoot.addEventListener('pointercancel', endDrag);
-  window.addEventListener('resize', constrainFloatingPlayer);
+
+  Object.entries(elements.panelToggles).forEach(([panelKey, button]) => {
+    if (!button) return;
+    button.addEventListener('click', () => togglePanelVisibility(panelKey));
+  });
+
+  document.querySelectorAll('[data-role="panel-header"]').forEach((header) => {
+    const panel = header.closest('.panel');
+    if (!panel) return;
+    header.addEventListener('pointerdown', (event) => beginPanelDrag(panel, event));
+  });
+
+  window.addEventListener('pointermove', handlePanelDrag);
+  window.addEventListener('pointerup', endPanelDrag);
+  window.addEventListener('pointercancel', endPanelDrag);
+  window.addEventListener('resize', () => {
+    Object.values(panels).forEach((panel) => {
+      if (panel && !panel.classList.contains('is-hidden')) {
+        constrainPanel(panel);
+      }
+    });
+  });
 }
 
 function exposePublicApi() {
@@ -425,14 +431,23 @@ function exposePublicApi() {
       state.selectedLibraryId = null;
       highlightLibrarySelection();
     },
-    collapse() {
-      setCollapsed(true);
+    showPlaylistPanel() {
+      setPanelVisibility('tracks', true);
     },
-    expand() {
-      setCollapsed(false);
+    hidePlaylistPanel() {
+      setPanelVisibility('tracks', false);
     },
-    toggleView() {
-      toggleCollapsed();
+    togglePlaylistPanel() {
+      togglePanelVisibility('tracks');
+    },
+    showLibraryPanel() {
+      setPanelVisibility('library', true);
+    },
+    hideLibraryPanel() {
+      setPanelVisibility('library', false);
+    },
+    toggleLibraryPanel() {
+      togglePanelVisibility('library');
     },
     selectLibrary(id) {
       handleLibrarySelect(id);
@@ -444,81 +459,94 @@ function exposePublicApi() {
   };
 }
 
-function startDrag(event) {
-  if ((event.button !== undefined && event.button !== 0 && event.pointerType !== 'touch') || event.target.closest('.app__toggle')) {
+function beginPanelDrag(panel, event) {
+  if (event.button !== undefined && event.button !== 0 && event.pointerType !== 'touch') {
     return;
   }
-  dragState.active = true;
-  dragState.pointerId = event.pointerId;
-  const rect = appRoot.getBoundingClientRect();
-  dragState.offsetX = event.clientX - rect.left;
-  dragState.offsetY = event.clientY - rect.top;
-  appRoot.style.bottom = 'auto';
-  appRoot.style.right = 'auto';
-  appRoot.style.top = `${rect.top}px`;
-  appRoot.style.left = `${rect.left}px`;
-  appRoot.classList.add('is-dragging');
-  appRoot.setPointerCapture(event.pointerId);
+  if (event.target.closest('button')) {
+    return;
+  }
+  dragContext.activePanel = panel;
+  dragContext.pointerId = event.pointerId;
+  const rect = panel.getBoundingClientRect();
+  dragContext.offsetX = event.clientX - rect.left;
+  dragContext.offsetY = event.clientY - rect.top;
+  panel.style.right = 'auto';
+  panel.style.bottom = 'auto';
+  panel.style.left = `${rect.left}px`;
+  panel.style.top = `${rect.top}px`;
+  panel.classList.add('is-dragging');
+  panel.setPointerCapture?.(event.pointerId);
   event.preventDefault();
 }
 
-function endDrag(event) {
-  if (!dragState.active || event.pointerId !== dragState.pointerId) {
+function endPanelDrag(event) {
+  if (!dragContext.activePanel || event.pointerId !== dragContext.pointerId) {
     return;
   }
-  dragState.active = false;
-  dragState.pointerId = null;
-  appRoot.classList.remove('is-dragging');
-  if (appRoot.hasPointerCapture(event.pointerId)) {
-    appRoot.releasePointerCapture(event.pointerId);
+  const panel = dragContext.activePanel;
+  dragContext.activePanel = null;
+  dragContext.pointerId = null;
+  panel.classList.remove('is-dragging');
+  if (panel.hasPointerCapture?.(event.pointerId)) {
+    panel.releasePointerCapture(event.pointerId);
   }
 }
 
-function handleDragMove(event) {
-  if (!dragState.active || event.pointerId !== dragState.pointerId) {
+function handlePanelDrag(event) {
+  const panel = dragContext.activePanel;
+  if (!panel || event.pointerId !== dragContext.pointerId) {
     return;
   }
-  const width = appRoot.offsetWidth;
-  const height = appRoot.offsetHeight;
+  const width = panel.offsetWidth;
+  const height = panel.offsetHeight;
   const minX = 8;
   const minY = 8;
   const maxX = Math.max(minX, window.innerWidth - width - 8);
   const maxY = Math.max(minY, window.innerHeight - height - 8);
-  const left = clamp(event.clientX - dragState.offsetX, minX, maxX);
-  const top = clamp(event.clientY - dragState.offsetY, minY, maxY);
+  const left = clamp(event.clientX - dragContext.offsetX, minX, maxX);
+  const top = clamp(event.clientY - dragContext.offsetY, minY, maxY);
 
-  appRoot.style.left = `${left}px`;
-  appRoot.style.top = `${top}px`;
+  panel.style.left = `${left}px`;
+  panel.style.top = `${top}px`;
 }
 
-function constrainFloatingPlayer() {
-  if (!appRoot.style.left && !appRoot.style.top) {
+function constrainPanel(panel) {
+  const styleLeft = parseFloat(panel.style.left);
+  const styleTop = parseFloat(panel.style.top);
+  if (Number.isNaN(styleLeft) && Number.isNaN(styleTop)) {
     return;
   }
-  const rect = appRoot.getBoundingClientRect();
+  const rect = panel.getBoundingClientRect();
   const minX = 8;
   const minY = 8;
   const maxX = Math.max(minX, window.innerWidth - rect.width - 8);
   const maxY = Math.max(minY, window.innerHeight - rect.height - 8);
-  const currentLeft = parseFloat(appRoot.style.left || rect.left);
-  const currentTop = parseFloat(appRoot.style.top || rect.top);
+  const currentLeft = Number.isNaN(styleLeft) ? rect.left : styleLeft;
+  const currentTop = Number.isNaN(styleTop) ? rect.top : styleTop;
   const clampedLeft = clamp(currentLeft, minX, maxX);
   const clampedTop = clamp(currentTop, minY, maxY);
-  appRoot.style.left = `${clampedLeft}px`;
-  appRoot.style.top = `${clampedTop}px`;
-  appRoot.style.bottom = 'auto';
-  appRoot.style.right = 'auto';
+  panel.style.left = `${clampedLeft}px`;
+  panel.style.top = `${clampedTop}px`;
+  panel.style.right = 'auto';
+  panel.style.bottom = 'auto';
 }
 
 (function initialise() {
-  appRoot.classList.add('is-loading');
+  playerPanel.classList.add('is-loading');
   elements.audio.volume = 0.8;
-  setCollapsed(false);
+  setPanelVisibility('tracks', state.panelVisibility.tracks);
+  setPanelVisibility('library', state.panelVisibility.library);
   renderLibrary();
   setLibraryView(state.libraryView);
   highlightLibrarySelection();
   attachEvents();
   exposePublicApi();
+  Object.values(panels).forEach((panel) => {
+    if (panel) {
+      constrainPanel(panel);
+    }
+  });
   const initialEntry = playlistCatalog.find((entry) => entry.id === state.selectedLibraryId) ?? playlistCatalog[0];
   if (initialEntry?.id && !state.selectedLibraryId) {
     state.selectedLibraryId = initialEntry.id;

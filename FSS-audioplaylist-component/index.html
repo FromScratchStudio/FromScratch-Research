@@ -4,27 +4,47 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>FSS Audio Playlist</title>
+    <link rel="stylesheet" type="text/css" href="https://f²²²²²onts.googleapis.com/css?family=Lato">
+    <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani&display=swap">
     <link rel="stylesheet" href="./src/styles.css" />
   </head>
   <body>
     <noscript>This player needs JavaScript to load the playlist.</noscript>
-    <main class="app" data-component="audio-playlist">
-      <header class="app__header">
-        <div class="app__heading">
-          <h1 class="app__title">FromScratch x SQD</h1>
-          <p class="app__subtitle">Playlists.</p>
-        </div>
-        <button
-          type="button"
-          class="app__toggle"
-          data-action="toggle-view"
-          aria-label="Collapse playlist"
-          aria-expanded="true"
-        >
-          Collapse
-        </button>
-      </header>
-      <section class="player" aria-label="Audio player">
+    <div class="workspace">
+      <section
+        class="panel panel--player"
+        data-component="player-panel"
+        data-panel="player"
+        aria-label="Audio player"
+      >
+        <header class="panel__header" data-role="panel-header">
+          <div>
+            <p class="panel__eyebrow">Mini component</p>
+            <h1 class="panel__title">FSS Audio Player</h1>
+          </div>
+          <div class="panel__headerActions">
+            <button
+              type="button"
+              class="panel__toggle"
+              data-action="toggle-panel"
+              data-target="tracks"
+              aria-pressed="true"
+            >
+              Playlist
+            </button>
+            <button
+              type="button"
+              class="panel__toggle"
+              data-action="toggle-panel"
+              data-target="library"
+              aria-pressed="true"
+            >
+              Library
+            </button>
+          </div>
+        </header>
+        <div class="player">
         <div class="player__now">
           <img class="player__cover" alt="" data-role="cover" hidden />
           <div class="player__meta">
@@ -47,29 +67,53 @@
           <span>Volume</span>
           <input type="range" data-role="volume" min="0" max="100" value="80" />
         </label>
+        </div>
       </section>
-      <section class="playlist" aria-label="Playlist">
-        <header class="playlist__header">
-          <h2 class="playlist__title" data-role="playlist-title">Playlist</h2>
-          <button type="button" class="playlist__reload" data-action="reload">Reload</button>
+      <section
+        class="panel panel--tracks"
+        data-panel="tracks"
+        aria-label="Playlist"
+      >
+        <header class="panel__header" data-role="panel-header">
+          <div>
+            <p class="panel__eyebrow">Tracklist</p>
+            <h2 class="panel__title" data-role="playlist-title">Playlist</h2>
+          </div>
+          <button type="button" class="panel__action" data-action="reload">
+            Reload
+          </button>
         </header>
-        <ul class="playlist__items" data-role="playlist"></ul>
-        <template id="track-template">
-          <li class="playlist__item">
-            <button type="button" class="playlist__itemButton">
-              <span class="playlist__itemTitle" data-field="title"></span>
-              <span class="playlist__itemArtist" data-field="artist"></span>
-              <span class="playlist__itemDuration" data-field="duration"></span>
-            </button>
-          </li>
-        </template>
-        <p class="playlist__empty" data-role="empty-state" hidden>No tracks available.</p>
+        <div class="playlist">
+          <ul class="playlist__items" data-role="playlist"></ul>
+          <template id="track-template">
+            <li class="playlist__item">
+              <button type="button" class="playlist__itemButton">
+                <span class="playlist__itemTitle" data-field="title"></span>
+                <span class="playlist__itemArtist" data-field="artist"></span>
+                <span class="playlist__itemDuration" data-field="duration"></span>
+              </button>
+            </li>
+          </template>
+          <p class="playlist__empty" data-role="empty-state" hidden>No tracks available.</p>
+        </div>
       </section>
-      <section class="library" data-component="playlist-library" data-view="grid" aria-label="Playlist library">
+      <section
+        class="panel panel--library library"
+        data-component="playlist-library"
+        data-panel="library"
+        data-view="grid"
+        aria-label="Playlist library"
+      >
+        <header class="panel__header" data-role="panel-header">
+          <div>
+            <p class="panel__eyebrow">Collections</p>
+            <h2 class="panel__title">Playlist Library</h2>
+          </div>
+        </header>
         <header class="library__header">
           <div class="library__intro">
-            <h2 class="library__title">Playlist Library</h2>
-            <p class="library__subtitle">Switch the vibe in one click.</p>
+            <h3 class="library__title">Quick switch</h3>
+            <p class="library__subtitle">Swap playlists instantly.</p>
           </div>
           <div class="library__view">
             <button type="button" class="library__viewBtn" data-action="library-view" data-view="grid" aria-pressed="true">
@@ -91,7 +135,7 @@
           </li>
         </template>
       </section>
-    </main>
+    </div>
     <script type="module" src="./src/main.js"></script>
   </body>
 </html>
