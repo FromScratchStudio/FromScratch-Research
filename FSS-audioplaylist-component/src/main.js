@@ -1,4 +1,10 @@
 import defaultPlaylistData from './data/playlist.json';
+import playlistLibrary from './data/library.json';
+
+const playlistCatalog = playlistLibrary.map((entry) => ({
+  ...entry,
+  source: entry.file ? new URL(entry.file, import.meta.url).toString() : null
+}));
 
 const appRoot = document.querySelector('[data-component="audio-playlist"]');
 
@@ -18,6 +24,12 @@ const elements = {
   playlist: appRoot.querySelector('[data-role="playlist"]'),
   emptyState: appRoot.querySelector('[data-role="empty-state"]'),
   playlistTitle: appRoot.querySelector('[data-role="playlist-title"]'),
+  library: {
+    root: appRoot.querySelector('[data-component="playlist-library"]'),
+    items: appRoot.querySelector('[data-role="library"]'),
+    template: appRoot.querySelector('#library-item-template'),
+    viewButtons: Array.from(appRoot.querySelectorAll('[data-action="library-view"]'))
+  },
   toggleView: appRoot.querySelector('[data-action="toggle-view"]'),
   dragHandle: appRoot.querySelector('.app__header'),
   controls: {
@@ -33,7 +45,9 @@ const state = {
   currentIndex: 0,
   isPlaying: false,
   lastSource: null,
-  isCollapsed: false
+  isCollapsed: false,
+  libraryView: 'grid',
+  selectedLibraryId: playlistCatalog[0]?.id ?? null
 };
 
 const dragState = {
@@ -132,6 +146,71 @@ function setCollapsed(collapsed) {
 
 function toggleCollapsed() {
   setCollapsed(!state.isCollapsed);
+}
+
+function setLibraryView(view = 'grid') {
+  const nextView = view === 'list' ? 'list' : 'grid';
+  state.libraryView = nextView;
+  if (elements.library?.root) {
+    elements.library.root.dataset.view = nextView;
+  }
+  if (elements.library?.viewButtons) {
+    elements.library.viewButtons.forEach((button) => {
+      const isActive = button.dataset.view === nextView;
+      button.setAttribute('aria-pressed', String(isActive));
+      button.disabled = isActive;
+    });
+  }
+}
+
+function highlightLibrarySelection() {
+  if (!elements.library?.items) return;
+  const buttons = elements.library.items.querySelectorAll('[data-library-id]');
+  buttons.forEach((button) => {
+    const isActive = button.dataset.libraryId === state.selectedLibraryId;
+    button.setAttribute('aria-pressed', String(isActive));
+  });
+}
+
+function syncLibrarySelection(source) {
+  if (!source) {
+    state.selectedLibraryId = null;
+  } else {
+    const match = playlistCatalog.find((entry) => entry.source === source);
+    state.selectedLibraryId = match?.id ?? null;
+  }
+  highlightLibrarySelection();
+}
+
+function handleLibrarySelect(id) {
+  const entry = playlistCatalog.find((item) => item.id === id);
+  if (!entry || !entry.source) {
+    return;
+  }
+  state.selectedLibraryId = id;
+  highlightLibrarySelection();
+  reloadPlaylist(entry.source);
+}
+
+function renderLibrary() {
+  if (!elements.library?.items || !elements.library?.template) return;
+  elements.library.items.innerHTML = '';
+  playlistCatalog.forEach((entry) => {
+    const clone = elements.library.template.content.firstElementChild.cloneNode(true);
+    const button = clone.querySelector('button');
+    button.dataset.libraryId = entry.id;
+    button.querySelector('[data-field="tag"]').textContent = entry.tag ?? '';
+    button.querySelector('[data-field="name"]').textContent = entry.name;
+    button.querySelector('[data-field="description"]').textContent = entry.description ?? '';
+    if (!entry.source) {
+      button.disabled = true;
+      button.classList.add('is-disabled');
+    } else {
+      button.addEventListener('click', () => handleLibrarySelect(entry.id));
+    }
+    elements.library.items.appendChild(clone);
+  });
+  highlightLibrarySelection();
 }
 
 function clone(data) {
@@ -273,6 +352,7 @@ async function reloadPlaylist(source) {
     const payload = await loadPlaylist(normalizedSource);
     applyPlaylist(payload);
     state.lastSource = normalizedSource ?? null;
+    syncLibrarySelection(state.lastSource);
   } catch (error) {
     console.error(error);
     elements.emptyState.hidden = false;
@@ -302,6 +382,9 @@ function attachEvents() {
   if (elements.toggleView) {
     elements.toggleView.addEventListener('click', toggleCollapsed);
   }
+  elements.library?.viewButtons?.forEach((button) => {
+    button.addEventListener('click', () => setLibraryView(button.dataset.view));
+  });
   appRoot.addEventListener('pointermove', handleDragMove);
   appRoot.addEventListener('pointerup', endDrag);
   appRoot.addEventListener('pointercancel', endDrag);
@@ -319,6 +402,8 @@ function exposePublicApi() {
     setPlaylist(tracks) {
       state.lastSource = null;
       applyPlaylist({ name: 'Custom playlist', accentColor: null, tracks });
+      state.selectedLibraryId = null;
+      highlightLibrarySelection();
     },
     collapse() {
       setCollapsed(true);
@@ -328,6 +413,9 @@ function exposePublicApi() {
     },
     toggleView() {
       toggleCollapsed();
+    },
+    selectLibrary(id) {
+      handleLibrarySelect(id);
     },
     play,
     pause,
@@ -406,7 +494,18 @@ function constrainFloatingPlayer() {
   appRoot.classList.add('is-loading');
   elements.audio.volume = 0.8;
   setCollapsed(false);
+  renderLibrary();
+  setLibraryView(state.libraryView);
+  highlightLibrarySelection();
   attachEvents();
   exposePublicApi();
-  reloadPlaylist();
+  const initialEntry = playlistCatalog.find((entry) => entry.id === state.selectedLibraryId) ?? playlistCatalog[0];
+  if (initialEntry?.id && !state.selectedLibraryId) {
+    state.selectedLibraryId = initialEntry.id;
+  }
+  if (initialEntry?.source) {
+    reloadPlaylist(initialEntry.source);
+  } else {
+    reloadPlaylist();
+  }
 })();
