@@ -18,6 +18,8 @@ const elements = {
   playlist: appRoot.querySelector('[data-role="playlist"]'),
   emptyState: appRoot.querySelector('[data-role="empty-state"]'),
   playlistTitle: appRoot.querySelector('[data-role="playlist-title"]'),
+  toggleView: appRoot.querySelector('[data-action="toggle-view"]'),
+  dragHandle: appRoot.querySelector('.app__header'),
   controls: {
     play: appRoot.querySelector('[data-action="play"]'),
     prev: appRoot.querySelector('[data-action="prev"]'),
@@ -30,8 +32,21 @@ const state = {
   playlist: [],
   currentIndex: 0,
   isPlaying: false,
-  lastSource: null
+  lastSource: null,
+  isCollapsed: false
 };
+
+const dragState = {
+  active: false,
+  pointerId: null,
+  offsetX: 0,
+  offsetY: 0
+};
+
+function clamp(value, min, max) {
+  if (Number.isNaN(value)) return min;
+  return Math.min(Math.max(value, min), max);
+}
 
 function formatTime(seconds) {
   if (Number.isNaN(seconds) || seconds === Infinity) {
@@ -102,6 +117,21 @@ function setPlayingState(playing) {
   state.isPlaying = playing;
   elements.controls.play.textContent = playing ? 'Pause' : 'Play';
   elements.controls.play.setAttribute('aria-label', playing ? 'Pause playback' : 'Play track');
+}
+
+function setCollapsed(collapsed) {
+  state.isCollapsed = collapsed;
+  appRoot.classList.toggle('is-collapsed', collapsed);
+  if (elements.toggleView) {
+    elements.toggleView.textContent = collapsed ? 'Expand' : 'Collapse';
+    elements.toggleView.setAttribute('aria-expanded', String(!collapsed));
+    elements.toggleView.setAttribute('aria-label', collapsed ? 'Expand playlist' : 'Collapse playlist');
+  }
+  requestAnimationFrame(constrainFloatingPlayer);
+}
+
+function toggleCollapsed() {
+  setCollapsed(!state.isCollapsed);
 }
 
 function clone(data) {
@@ -265,6 +295,17 @@ function attachEvents() {
   elements.audio.addEventListener('timeupdate', updateProgress);
   elements.audio.addEventListener('loadedmetadata', updateProgress);
   elements.audio.addEventListener('ended', playNext);
+
+  if (elements.dragHandle) {
+    elements.dragHandle.addEventListener('pointerdown', startDrag);
+  }
+  if (elements.toggleView) {
+    elements.toggleView.addEventListener('click', toggleCollapsed);
+  }
+  appRoot.addEventListener('pointermove', handleDragMove);
+  appRoot.addEventListener('pointerup', endDrag);
+  appRoot.addEventListener('pointercancel', endDrag);
+  window.addEventListener('resize', constrainFloatingPlayer);
 }
 
 function exposePublicApi() {
@@ -279,6 +320,15 @@ function exposePublicApi() {
       state.lastSource = null;
       applyPlaylist({ name: 'Custom playlist', accentColor: null, tracks });
     },
+    collapse() {
+      setCollapsed(true);
+    },
+    expand() {
+      setCollapsed(false);
+    },
+    toggleView() {
+      toggleCollapsed();
+    },
     play,
     pause,
     next: playNext,
@@ -286,9 +336,76 @@ function exposePublicApi() {
   };
 }
 
+function startDrag(event) {
+  if ((event.button !== undefined && event.button !== 0 && event.pointerType !== 'touch') || event.target.closest('.app__toggle')) {
+    return;
+  }
+  dragState.active = true;
+  dragState.pointerId = event.pointerId;
+  const rect = appRoot.getBoundingClientRect();
+  dragState.offsetX = event.clientX - rect.left;
+  dragState.offsetY = event.clientY - rect.top;
+  appRoot.style.bottom = 'auto';
+  appRoot.style.right = 'auto';
+  appRoot.style.top = `${rect.top}px`;
+  appRoot.style.left = `${rect.left}px`;
+  appRoot.classList.add('is-dragging');
+  appRoot.setPointerCapture(event.pointerId);
+  event.preventDefault();
+}
+
+function endDrag(event) {
+  if (!dragState.active || event.pointerId !== dragState.pointerId) {
+    return;
+  }
+  dragState.active = false;
+  dragState.pointerId = null;
+  appRoot.classList.remove('is-dragging');
+  if (appRoot.hasPointerCapture(event.pointerId)) {
+    appRoot.releasePointerCapture(event.pointerId);
+  }
+}
+
+function handleDragMove(event) {
+  if (!dragState.active || event.pointerId !== dragState.pointerId) {
+    return;
+  }
+  const width = appRoot.offsetWidth;
+  const height = appRoot.offsetHeight;
+  const minX = 8;
+  const minY = 8;
+  const maxX = Math.max(minX, window.innerWidth - width - 8);
+  const maxY = Math.max(minY, window.innerHeight - height - 8);
+  const left = clamp(event.clientX - dragState.offsetX, minX, maxX);
+  const top = clamp(event.clientY - dragState.offsetY, minY, maxY);
+
+  appRoot.style.left = `${left}px`;
+  appRoot.style.top = `${top}px`;
+}
+
+function constrainFloatingPlayer() {
+  if (!appRoot.style.left && !appRoot.style.top) {
+    return;
+  }
+  const rect = appRoot.getBoundingClientRect();
+  const minX = 8;
+  const minY = 8;
+  const maxX = Math.max(minX, window.innerWidth - rect.width - 8);
+  const maxY = Math.max(minY, window.innerHeight - rect.height - 8);
+  const currentLeft = parseFloat(appRoot.style.left || rect.left);
+  const currentTop = parseFloat(appRoot.style.top || rect.top);
+  const clampedLeft = clamp(currentLeft, minX, maxX);
+  const clampedTop = clamp(currentTop, minY, maxY);
+  appRoot.style.left = `${clampedLeft}px`;
+  appRoot.style.top = `${clampedTop}px`;
+  appRoot.style.bottom = 'auto';
+  appRoot.style.right = 'auto';
+}
+
 (function initialise() {
   appRoot.classList.add('is-loading');
   elements.audio.volume = 0.8;
+  setCollapsed(false);
   attachEvents();
   exposePublicApi();
   reloadPlaylist();

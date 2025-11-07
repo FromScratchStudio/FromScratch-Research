@@ -10,8 +10,19 @@
     <noscript>This player needs JavaScript to load the playlist.</noscript>
     <main class="app" data-component="audio-playlist">
       <header class="app__header">
-        <h1 class="app__title">Audio Playlist</h1>
-        <p class="app__subtitle">Lightweight playlist powered by a JSON feed.</p>
+        <div class="app__heading">
+          <h1 class="app__title">Audio Playlist</h1>
+          <p class="app__subtitle">Lightweight playlist powered by a JSON feed.</p>
+        </div>
+        <button
+          type="button"
+          class="app__toggle"
+          data-action="toggle-view"
+          aria-label="Collapse playlist"
+          aria-expanded="true"
+        >
+          Collapse
+        </button>
       </header>
       <section class="player" aria-label="Audio player">
         <div class="player__now">
