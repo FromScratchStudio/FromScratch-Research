@@ -77,6 +77,118 @@ const dragContext = {
   offsetY: 0
 };
 
+const durationCache = new Map();
+const pendingDurationLoads = new Set();
+
+function getTrackCacheKey(track, fallbackIndex = 0) {
+  if (!track) return null;
+  if (typeof track.__cacheKey === 'string') {
+    return track.__cacheKey;
+  }
+  const computed = track.id ?? track.src ?? `track-${fallbackIndex}`;
+  Object.defineProperty(track, '__cacheKey', {
+    value: computed,
+    configurable: true,
+    enumerable: false,
+    writable: true
+  });
+  return computed;
+}
+
+function hasUsableDuration(value) {
+  return Number.isFinite(value) && value > 0;
+}
+
+function formatDurationLabel(value) {
+  return hasUsableDuration(value) ? formatTime(value) : '-';
+}
+
+function setNodeDurationText(node, duration) {
+  if (!node) return;
+  node.textContent = formatDurationLabel(duration);
+}
+
+function updateTrackDurationDisplay(trackKey, duration) {
+  if (!trackKey || !elements.playlist) return;
+  elements.playlist.querySelectorAll('button[data-track-key]').forEach((button) => {
+    if (button.dataset.trackKey !== trackKey) return;
+    const target = button.querySelector('[data-field="duration"]');
+    setNodeDurationText(target, duration);
+  });
+}
+
+function persistTrackDuration(track, trackKey, duration) {
+  if (!trackKey) {
+    return;
+  }
+  const normalized = Number(duration);
+  if (!hasUsableDuration(normalized)) {
+    return;
+  }
+  durationCache.set(trackKey, normalized);
+  let targetTrack = track;
+  if (!targetTrack) {
+    targetTrack = state.playlist.find((candidate, index) => getTrackCacheKey(candidate, index) === trackKey);
+  }
+  if (targetTrack) {
+    targetTrack.duration = normalized;
+  }
+  updateTrackDurationDisplay(trackKey, normalized);
+}
+
+function ensureTrackDuration(track, trackKey) {
+  if (!track?.src || !trackKey || typeof Audio === 'undefined') {
+    return;
+  }
+  const cached = durationCache.get(trackKey);
+  if (hasUsableDuration(cached)) {
+    updateTrackDurationDisplay(trackKey, cached);
+    return;
+  }
+  if (pendingDurationLoads.has(trackKey)) {
+    return;
+  }
+  pendingDurationLoads.add(trackKey);
+  const probe = new Audio();
+  probe.preload = 'metadata';
+  const teardown = () => {
+    pendingDurationLoads.delete(trackKey);
+    probe.removeEventListener('loadedmetadata', handleLoaded);
+    probe.removeEventListener('error', handleError);
+    probe.src = '';
+  };
+  const handleLoaded = () => {
+    persistTrackDuration(track, trackKey, probe.duration);
+    teardown();
+  };
+  const handleError = () => {
+    teardown();
+  };
+  probe.addEventListener('loadedmetadata', handleLoaded);
+  probe.addEventListener('error', handleError);
+  probe.src = track.src;
+}
+
+function getKnownDurationForTrack(track, fallbackIndex = 0) {
+  if (!track) return NaN;
+  const trackKey = getTrackCacheKey(track, fallbackIndex);
+  if (trackKey) {
+    const cached = durationCache.get(trackKey);
+    if (hasUsableDuration(cached)) {
+      return cached;
+    }
+  }
+  const fallback = Number(track.duration);
+  return hasUsableDuration(fallback) ? fallback : NaN;
+}
+
+function syncCurrentTrackDuration() {
+  const track = state.playlist[state.currentIndex];
+  if (!track) return;
+  const trackKey = getTrackCacheKey(track, state.currentIndex);
+  persistTrackDuration(track, trackKey, elements.audio.duration);
+}
+
 function clamp(value, min, max) {
   if (Number.isNaN(value)) return min;
   return Math.min(Math.max(value, min), max);
@@ -124,10 +236,14 @@ function renderPlaylist(tracks) {
   tracks.forEach((track, index) => {
     const clone = template.content.firstElementChild.cloneNode(true);
     const button = clone.querySelector('button');
+    const durationNode = button.querySelector('[data-field="duration"]');
+    const trackKey = getTrackCacheKey(track, index);
     button.dataset.index = String(index);
+    button.dataset.trackKey = trackKey ?? '';
     button.querySelector('[data-field="title"]').textContent = track.title;
     button.querySelector('[data-field="artist"]').textContent = track.artist;
-    button.querySelector('[data-field="duration"]').textContent = track.duration ? formatTime(track.duration) : '-';
+    setNodeDurationText(durationNode, getKnownDurationForTrack(track, index));
+    ensureTrackDuration(track, trackKey);
     button.addEventListener('click', () => {
       if (state.currentIndex === index) {
         togglePlayback();
@@ -227,6 +343,7 @@ function renderLibrary() {
     button.querySelector('[data-field="tag"]').textContent = entry.tag ?? '';
     button.querySelector('[data-field="name"]').textContent = entry.name;
     button.querySelector('[data-field="description"]').textContent = entry.description ?? '';
+    button.querySelector('[data-field="cover"]').src = entry.cover ?? '#';
     if (!entry.source) {
       button.disabled = true;
       button.classList.add('is-disabled');
@@ -245,8 +362,11 @@ function clone(data) {
 function updateProgress() {
   const { currentTime, duration } = elements.audio;
   elements.elapsed.textContent = formatTime(currentTime);
-  elements.duration.textContent = formatTime(duration);
-  if (!Number.isNaN(duration) && duration > 0) {
+  const effectiveDuration = hasUsableDuration(duration)
+    ? duration
+    : getKnownDurationForTrack(state.playlist[state.currentIndex], state.currentIndex);
+  elements.duration.textContent = formatTime(effectiveDuration);
+  if (hasUsableDuration(duration)) {
     const progress = (currentTime / duration) * 100;
     elements.seek.value = String(progress);
   } else {
@@ -254,14 +374,21 @@ function updateProgress() {
   }
 }
 
+function handleAudioLoadedMetadata() {
+  updateProgress();
+  syncCurrentTrackDuration();
+}
+
 function selectTrack(index, options = {}) {
   const track = state.playlist[index];
   if (!track) {
     return;
   }
+  const trackKey = getTrackCacheKey(track, index);
   state.currentIndex = index;
   elements.audio.src = track.src;
   elements.audio.load();
+  ensureTrackDuration(track, trackKey);
   updateNowPlaying(track);
   highlightActiveTrack();
   updateProgress();
@@ -345,6 +472,9 @@ function applyPlaylist(payload) {
   }
 
   state.playlist = tracks;
+  state.playlist.forEach((track, index) => {
+    getTrackCacheKey(track, index);
+  });
   state.currentIndex = 0;
   renderPlaylist(tracks);
   highlightActiveTrack();
@@ -387,7 +517,7 @@ function attachEvents() {
   elements.audio.addEventListener('play', () => setPlayingState(true));
   elements.audio.addEventListener('pause', () => setPlayingState(false));
   elements.audio.addEventListener('timeupdate', updateProgress);
-  elements.audio.addEventListener('loadedmetadata', updateProgress);
+  elements.audio.addEventListener('loadedmetadata', handleAudioLoadedMetadata);
   elements.audio.addEventListener('ended', playNext);
 
   elements.library?.viewButtons?.forEach((button) => {

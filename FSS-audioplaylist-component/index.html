@@ -31,7 +31,7 @@
               data-target="tracks"
               aria-pressed="true"
             >
-              Playlist
+              Tracklist
             </button>
             <button
               type="button"
@@ -40,7 +40,7 @@
               data-target="library"
               aria-pressed="true"
             >
-              Library
+              Catalog
             </button>
           </div>
         </header>
@@ -106,28 +106,29 @@
       >
         <header class="panel__header" data-role="panel-header">
           <div>
-            <p class="panel__eyebrow">Collections</p>
-            <h2 class="panel__title">Playlist Library</h2>
+            <p class="panel__eyebrow">Music Catalog & Playlists</p>
+            <h2 class="panel__title"></h2>
           </div>
         </header>
         <header class="library__header">
           <div class="library__intro">
-            <h3 class="library__title">Quick switch</h3>
-            <p class="library__subtitle">Swap playlists instantly.</p>
+            <h3 class="library__title">Pre-Releases</h3>
+            <p class="library__subtitle">Produced by FromScratch Studio x SQD.</p>
           </div>
-          <div class="library__view">
+          <!-- <div class="library__view">
             <button type="button" class="library__viewBtn" data-action="library-view" data-view="grid" aria-pressed="true">
               Grid
             </button>
             <button type="button" class="library__viewBtn" data-action="library-view" data-view="list" aria-pressed="false">
               List
             </button>
-          </div>
+          </div> -->
         </header>
         <ul class="library__items" data-role="library"></ul>
         <template id="library-item-template">
           <li class="library__item">
             <button type="button" class="library__cardButton">
+              <img class="library__cover" data-field="cover"/>
               <span class="library__cardTag" data-field="tag"></span>
               <span class="library__cardTitle" data-field="name"></span>
               <span class="library__cardDescription" data-field="description"></span>
