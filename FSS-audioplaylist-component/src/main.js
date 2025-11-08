@@ -475,6 +475,7 @@ function beginPanelDrag(panel, event) {
   panel.style.bottom = 'auto';
   panel.style.left = `${rect.left}px`;
   panel.style.top = `${rect.top}px`;
+  panel.style.transform = 'none';
   panel.classList.add('is-dragging');
   panel.setPointerCapture?.(event.pointerId);
   event.preventDefault();

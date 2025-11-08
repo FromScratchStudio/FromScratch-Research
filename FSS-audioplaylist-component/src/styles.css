@@ -70,23 +70,29 @@ body {
 }
 
 .panel[data-panel="player"] {
-  bottom: 1.5rem;
-  left: 1.5rem;
+  bottom: 2rem;
+  left: 50%;
   width: clamp(300px, 26vw, 420px);
+  transform: translateX(-115%);
 }
 
 .panel[data-panel="tracks"] {
-  bottom: 1.5rem;
-  right: 1.5rem;
-  width: clamp(320px, 28vw, 460px);
-  max-height: calc(100vh - 3rem);
+  bottom: 2rem;
+  left: 50%;
+  width: clamp(340px, 32vw, 520px);
+  max-height: calc(100vh - 4rem);
+  transform: translateX(15%);
 }
 
 .panel[data-panel="library"] {
   top: 1.5rem;
-  right: 1.5rem;
-  width: clamp(320px, 30vw, 480px);
-  max-height: calc(100vh - 3rem);
+  left: 50%;
+  width: 80vw;
+  height: 40vh;
+  min-height: 320px;
+  max-width: none;
+  max-height: none;
+  transform: translateX(-50%);
 }
 
 .panel__header {
