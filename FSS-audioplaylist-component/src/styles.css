@@ -3,6 +3,29 @@
  @import url('https://fonts.googleapis.com/css2?family=Rajdhani&display=swap');
 /************************/
 
+/* width */
+::-webkit-scrollbar {
+    width: 8px;    
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey; 
+    border-radius: 10px;
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: rgb(161, 161, 161); 
+    border-radius: 10px;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background:rgb(184, 184, 184); 
+  }
+
+
 :root {
   color-scheme: light;
   --accent: #682424;
@@ -73,28 +96,28 @@ body {
   bottom: 2rem;
   left: 50%;
   width: clamp(300px, 26vw, 420px);
-  transform: translateX(-115%);
+  transform: translateX(-50%);
 }
 
 .panel[data-panel="tracks"] {
-  bottom: 2rem;
+  bottom: 420px;
   left: 50%;
-  width: clamp(340px, 32vw, 520px);
-  max-height: calc(100vh - 4rem);
-  transform: translateX(15%);
+  width: clamp(300px, 26vw, 420px);
+  /* max-height: calc(40vh - 2rem); */
+  height: 300px;
+  max-height: 300px;
+  transform: translateX(-50%);
 }
 
 .panel[data-panel="library"] {
-  top: 1.5rem;
+  top: 2rem;
   left: 50%;
-  width: 80vw;
-  height: 60vh;
-  min-height: 320px;
+  width: min(90vw, 1100px);
+  height: min(50vh, 580px);
+  min-height: 260px;
   max-width: none;
-  max-height: none;
+  max-height: calc(100vh - 4rem);
   transform: translateX(-50%);
-  /*text-align: center;*/
-  /*align-items: center;*/
 }
 
 .panel__header {
@@ -431,8 +454,8 @@ body {
 }
 
 .library[data-view="grid"] .library__items {
-  grid-template-columns: repeat(auto-fill, minmax(320px, 2fr));
-  grid-auto-rows: 320px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-auto-rows: 280px;
 }
 
 .library[data-view="list"] .library__items {
@@ -454,7 +477,7 @@ body {
   cursor: pointer;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
   font-family: 'Rajdhani', cursive;
-  height: 320px;
+  height: 280px;
 }
 
 .library__cardButton:hover,
