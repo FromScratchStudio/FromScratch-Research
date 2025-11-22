@@ -1,0 +1,175 @@
+{
+  "name": "FromScratch x SQD - Volume I",
+  "accentColor": "#38bdf8",
+  "tracks": [
+    {
+        "id": "fromscratch-intro-remastered",
+        "title": "Fromscratch Intro (Remastered)",
+        "artist": "SQD",
+        "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch Intro (Remastered).wav",
+        "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+        "duration": 6
+    }
+    , {
+        "id" : "fromscratch-motivation-remastered",
+        "title" : "FromScratch x SQD Motivation (Remastered)",
+        "genre" : "Hip-Hop",
+        "artist" : "",
+        "src" : "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch Motivation (Remastered).wav",
+        "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+        "duration": 6
+    }
+    , {
+        "id" : "fromscratch-creation-remastered",
+        "title" : "FromScratch x SQD Creation (Remastered)",
+        "genre" : "Hip-Hop",
+        "artist" : "",
+        "src" : "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch Creation (Remastered).wav",
+        "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+        "duration": 6
+    }
+    , {
+      
+        "id" : "bad-decisions-instrumental-remastered",
+        "title" : "Bad Decisions (Instrumental) (Remastered)",
+        "genre" : "Hip-Hop",
+        "artist" : "",
+        "src" : "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/Bad Decisions (Remastered) (Instrumental).mp3",
+        "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+        "duration": 6
+    }
+    ,{
+        "Id" : "boom-didi-boom-woo-ragga-remastered",
+        "Title" : "Boom Bidi Boom Woo (Remastered) - alpha",
+        "Genre" : "Hip-Hop",
+        "Artist" : "3 INU",
+        "TrackPath" : "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/Boom didi boom woo (Ragga remastered).mp3",
+        "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+        "duration": 6
+    }
+    , {
+        "Id" : "²boom-didi-boom-woo-remastered-ascension",
+        "Title" : "Boom Bidi Boom Woo (Remastered) - Beta",
+        "Genre" : "Hip-Hop",
+        "Artist" : "",
+        "TrackPath" : "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/Boom Didi boom (Remastered) - Ascension.mp3",
+        "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+        "duration": 6
+    }
+    , {
+        "Id" : "bon-vieux-temps-remastered",
+        "Title" : "Bon vieux temps (Remastered) - Beta",
+        "Genre" : "Hip-Hop",
+        "Artist" : "",
+        "TrackPath" : "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/Bon vieux temps (Remastered).mp3",
+        "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+        "duration": 6 
+    }
+    , {
+        "Id" : "poissard-remastered",
+        "Title" : "Poissard (Remastered) - Beta",
+        "Genre" : "Hip-Hop",
+        "Artist" : "",
+        "TrackPath" : "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/Poissards (remastered).mp3",
+        "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+        "duration": 6
+    },
+
+    {
+      "id": "Lumieres-rouges-funcky-beat",
+      "title": "Lumières rouges - Funcky beat",
+      "artist": "SQD",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Lumières rouges - Funcky beat.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "lo-fi-jazzy",
+      "title": "Lo-Fi Jazzy",
+      "artist": "SQD",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Lo-Fi Jazzy.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "le-temps-qui-file",
+      "title": "Le temps qui file",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Le temps qui fil.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "en-apesanteur",
+      "title": "En apesanteur",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/En apesanteur.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "lumieres-rouges-basses",
+      "title": "Lumières rouges - Basses",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Lumières rouges - Basses.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "mauvaise-graine",
+      "title": "Mauvaise graine",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Mauvaise graine.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "run-run-run-mother-fucker-run",
+      "title": "Run run run mother fucker run",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Run run run mother fucker run.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "papillon-sur-beton-remastered",
+      "title": "Papillon sur beton (Remastered)",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Papillon sur beton (Remastered).mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "willy-aime-le-miel",
+      "title": "Willy aime le miel",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Willy aime le miel.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "willy-aime-le-miel-slow",
+      "title": "Willy aime le miel - slow",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Willy aime le miel - slow.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "lumieres-rouges-v1",
+      "title": "Lumières rouges - V1",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Lumières rouges - V1.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "un-train-denfer",
+      "title": "Un Train d'enfer",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Un Train d'enfer.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    }
+  ]
+}
