@@ -1,0 +1,102 @@
+{
+  "name": "Experimentals Vol. I",
+  "accentColor": "#38bdf8",
+  "tracks": [
+    {
+      "id": "Lumieres-rouges-funcky-beat",
+      "title": "Lumières rouges - Funcky beat",
+      "artist": "SQD",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Lumières rouges - Funcky beat.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "lo-fi-jazzy",
+      "title": "Lo-Fi Jazzy",
+      "artist": "SQD",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Lo-Fi Jazzy.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "le-temps-qui-file",
+      "title": "Le temps qui file",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Le temps qui fil.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "en-apesanteur",
+      "title": "En apesanteur",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/En apesanteur.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "lumieres-rouges-basses",
+      "title": "Lumières rouges - Basses",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Lumières rouges - Basses.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "mauvaise-graine",
+      "title": "Mauvaise graine",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Mauvaise graine.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "run-run-run-mother-fucker-run",
+      "title": "Run run run mother fucker run",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Run run run mother fucker run.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "papillon-sur-beton-remastered",
+      "title": "Papillon sur beton (Remastered)",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Papillon sur beton (Remastered).mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "willy-aime-le-miel",
+      "title": "Willy aime le miel",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Willy aime le miel.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "willy-aime-le-miel-slow",
+      "title": "Willy aime le miel - slow",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Willy aime le miel - slow.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "lumieres-rouges-v1",
+      "title": "Lumières rouges - V1",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Lumières rouges - V1.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    },
+    {
+      "id": "un-train-denfer",
+      "title": "Un Train d'enfer",
+      "artist": "SQD - SkeeWeedy",
+      "src": "http://ressources.fromscratchstudio.com/fromscratch-sqd/assets/soundtracks/FromScratch-songs/experimentations/Un Train d'enfer.mp3",
+      "cover": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=400&q=80",
+      "duration": 6
+    }
+  ]
+}

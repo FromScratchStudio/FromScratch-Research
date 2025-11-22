@@ -1,0 +1,39 @@
+*** Begin Patch
+*** Update File: FSS-audioplaylist-component/src/services/playlist-service.js
+@@
+ const playlistDataMap = {
+   './data/playlist.json': defaultPlaylistData,
+   './data/deep-work.json': deepWorkData,
+   './data/evening-chill.json': eveningChillData
+ };
++const CORS_PROXY_FALLBACK = 'https://cors.isomorphic-git.org/';
+@@
+ function applyCorsProxy(url, proxy) {
+   if (!proxy) {
+     return null;
+   }
+   if (proxy.includes('{url}')) {
+@@
+ }
++
++function resolveCorsProxy(options = {}) {
++  const globalConfig = window?.FSSAudioPlaylistConfig;
++  if (Object.prototype.hasOwnProperty.call(options, 'corsProxy')) {
++    return options.corsProxy;
++  }
++  if (globalConfig && Object.prototype.hasOwnProperty.call(globalConfig, 'corsProxy')) {
++    return globalConfig.corsProxy;
++  }
++  return CORS_PROXY_FALLBACK;
++}
+@@
+ export class PlaylistService {
+   constructor(options = {}) {
+-    this.corsProxy = options.corsProxy ?? window?.FSSAudioPlaylistConfig?.corsProxy ?? null;
++    this.corsProxy = resolveCorsProxy(options);
+     this.catalog = playlistLibrary.map((entry) => ({
+       ...entry,
+       source: resolveCatalogSource(entry.file)
+     }));
+     this.defaultPlaylist = defaultPlaylistData;
+*** End Patch
