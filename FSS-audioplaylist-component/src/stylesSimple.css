@@ -51,45 +51,36 @@ body {
   min-height: 100vh;
   background: var(--background);
   color: var(--text);
-  overflow: auto;
+  overflow: hidden;
   font-size: large;
   font-family: 'Rajdhani', cursive;
 }
 
 .workspace {
   width: 100vw;
-  min-height: 100vh;
   height: 100vh;
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  grid-template-areas:
-    "library library"
-    "player tracks";
-  gap: 1rem;
-  padding: 1.5rem;
+  /* position: relative; */
+  /* background: radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.15), transparent 40%),
+    radial-gradient(circle at 80% 80%, rgba(14, 165, 233, 0.12), transparent 40%),
+    var(--background); */
   font-family: 'Rajdhani', cursive;
 }
 
 .panel {
-  position: relative;
+  /* position: fixed;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 1rem 1.25rem;
+  padding: 1rem 1.25rem; */
   /* box-shadow: 0 18px 35px rgba(15, 23, 42, 0.12); */
-  min-width: 0;
-  width: 100%;
-  max-width: none;
-  resize: none;
+  /* min-width: 280px;
+  max-width: 480px;
+  resize: both;
   overflow: auto;
   touch-action: none;
-  transition: box-shadow 0.2s ease;
+  transition: box-shadow 0.2s ease;*/
   z-index: 10;
   font-family: 'Rajdhani', cursive;
-  display: flex;
-  flex-direction: column;
 }
 
 .panel.is-dragging {
@@ -102,23 +93,33 @@ body {
 }
 
 .panel[data-panel="player"] {
-  grid-area: player;
-  height: 100%;
-  max-height: none;
+  bottom: 2rem;
+  left: 50%;
+  /* width: clamp(300px, 26vw, 420px);
+  transform: translateX(-50%); */
 }
 
 .panel[data-panel="tracks"] {
-  grid-area: tracks;
-  height: 100%;
-  max-height: none;
+  /* bottom: 420px;
+  left: 50%;
+  width: clamp(300px, 26vw, 420px); */
+  /* max-height: calc(40vh - 2rem); */
+  /* height: 300px;
+  max-height: 300px;
+  transform: translateX(-50%); */
 }
 
 .panel[data-panel="library"] {
-  grid-area: library;
-  width: 100%;
-  height: auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* top: 2rem;
+  left: 50%;
+  width: min(90vw, 1100px);
+  height: min(50vh, 580px);
   min-height: 260px;
-  max-height: none;
+  max-width: none;
+  max-height: calc(100vh - 4rem);*/
+  /* transform: translateX(-50%); */
 }
 
 .panel__header {
@@ -539,7 +540,6 @@ body {
   }
 
   .workspace {
-    display: block;
     padding: 1rem 0;
   }
 

@@ -7,11 +7,79 @@
     <link rel="stylesheet" type="text/css" href="https://f²²²²²onts.googleapis.com/css?family=Lato">
     <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani&display=swap">
-    <link rel="stylesheet" href="./src/styles.css" />
+    <link rel="stylesheet" href="./src/stylesSimple.css" media="(max-width: 768px)">
+    <link rel="stylesheet" href="./src/styles.css" media="(min-width: 769px)">
   </head>
   <body>
     <noscript>This player needs JavaScript to load the playlist.</noscript>
     <div class="workspace">
+      <section
+        class="panel panel--library library"
+        data-component="playlist-library"
+        data-panel="library"
+        data-view="grid"
+        aria-label="Playlist library"
+      >
+        <header class="panel__header" data-role="panel-header">
+          <div>
+            <p class="panel__eyebrow">Music Catalog & Playlists</p>
+            <h2 class="panel__title"></h2>
+          </div>
+        </header>
+        <header class="library__header">
+          <div class="library__intro">
+            <h3 class="library__title">Pre-Releases</h3>
+            <p class="library__subtitle">Produced by FromScratch Studio x SQD.</p>
+          </div>
+          <!-- <div class="library__view">
+            <button type="button" class="library__viewBtn" data-action="library-view" data-view="grid" aria-pressed="true">
+              Grid
+            </button>
+            <button type="button" class="library__viewBtn" data-action="library-view" data-view="list" aria-pressed="false">
+              List
+            </button>
+          </div> -->
+        </header>
+        <ul class="library__items" data-role="library"></ul>
+        <template id="library-item-template">
+          <li class="library__item">
+            <button type="button" class="library__cardButton">
+              <img class="library__cover" data-field="cover"/>
+              <span class="library__cardTag" data-field="tag"></span>
+              <span class="library__cardTitle" data-field="name"></span>
+              <span class="library__cardDescription" data-field="description"></span>
+            </button>
+          </li>
+        </template>
+      </section>
+      <section
+        class="panel panel--tracks"
+        data-panel="tracks"
+        aria-label="Playlist"
+      >
+        <header class="panel__header" data-role="panel-header">
+          <div>
+            <p class="panel__eyebrow">Tracklist</p>
+            <h2 class="panel__title" data-role="playlist-title">Playlist</h2>
+          </div>
+          <button type="button" class="panel__action" data-action="reload">
+            Reload
+          </button>
+        </header>
+        <div class="playlist">
+          <ul class="playlist__items" data-role="playlist"></ul>
+          <template id="track-template">
+            <li class="playlist__item">
+              <button type="button" class="playlist__itemButton">
+                <span class="playlist__itemTitle" data-field="title"></span>
+                <span class="playlist__itemArtist" data-field="artist"></span>
+                <span class="playlist__itemDuration" data-field="duration"></span>
+              </button>
+            </li>
+          </template>
+          <p class="playlist__empty" data-role="empty-state" hidden>No tracks available.</p>
+        </div>
+      </section>
       <section
         class="panel panel--player"
         data-component="player-panel"
@@ -68,73 +136,6 @@
           <input type="range" data-role="volume" min="0" max="100" value="80" />
         </label>
         </div>
-      </section>
-      <section
-        class="panel panel--tracks"
-        data-panel="tracks"
-        aria-label="Playlist"
-      >
-        <header class="panel__header" data-role="panel-header">
-          <div>
-            <p class="panel__eyebrow">Tracklist</p>
-            <h2 class="panel__title" data-role="playlist-title">Playlist</h2>
-          </div>
-          <button type="button" class="panel__action" data-action="reload">
-            Reload
-          </button>
-        </header>
-        <div class="playlist">
-          <ul class="playlist__items" data-role="playlist"></ul>
-          <template id="track-template">
-            <li class="playlist__item">
-              <button type="button" class="playlist__itemButton">
-                <span class="playlist__itemTitle" data-field="title"></span>
-                <span class="playlist__itemArtist" data-field="artist"></span>
-                <span class="playlist__itemDuration" data-field="duration"></span>
-              </button>
-            </li>
-          </template>
-          <p class="playlist__empty" data-role="empty-state" hidden>No tracks available.</p>
-        </div>
-      </section>
-      <section
-        class="panel panel--library library"
-        data-component="playlist-library"
-        data-panel="library"
-        data-view="grid"
-        aria-label="Playlist library"
-      >
-        <header class="panel__header" data-role="panel-header">
-          <div>
-            <p class="panel__eyebrow">Music Catalog & Playlists</p>
-            <h2 class="panel__title"></h2>
-          </div>
-        </header>
-        <header class="library__header">
-          <div class="library__intro">
-            <h3 class="library__title">Pre-Releases</h3>
-            <p class="library__subtitle">Produced by FromScratch Studio x SQD.</p>
-          </div>
-          <!-- <div class="library__view">
-            <button type="button" class="library__viewBtn" data-action="library-view" data-view="grid" aria-pressed="true">
-              Grid
-            </button>
-            <button type="button" class="library__viewBtn" data-action="library-view" data-view="list" aria-pressed="false">
-              List
-            </button>
-          </div> -->
-        </header>
-        <ul class="library__items" data-role="library"></ul>
-        <template id="library-item-template">
-          <li class="library__item">
-            <button type="button" class="library__cardButton">
-              <img class="library__cover" data-field="cover"/>
-              <span class="library__cardTag" data-field="tag"></span>
-              <span class="library__cardTitle" data-field="name"></span>
-              <span class="library__cardDescription" data-field="description"></span>
-            </button>
-          </li>
-        </template>
       </section>
     </div>
     <script type="module" src="./src/main.js"></script>
