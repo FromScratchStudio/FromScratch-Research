@@ -71,7 +71,6 @@ export class AudioPlaylistApp {
     this.libraryPanel.onViewChange((view) => this.setLibraryView(view));
     this.libraryPanel.highlightSelection(this.state.selectedLibraryId);
 
-    this.layoutManager.attachDragHandles(document.querySelectorAll('[data-role="panel-header"]'));
     this.layoutManager.setInitialVisibility(this.state.panelVisibility);
 
     window.addEventListener('resize', () => this.layoutManager.constrainVisiblePanels());

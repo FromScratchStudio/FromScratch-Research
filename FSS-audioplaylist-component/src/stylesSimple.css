@@ -79,11 +79,6 @@ body {
   font-family: 'Rajdhani', cursive;
 }
 
-.panel.is-dragging {
-  box-shadow: 0 25px 55px rgba(15, 23, 42, 0.2);
-  cursor: grabbing;
-}
-
 .panel.is-hidden {
   display: none;
 }
@@ -124,7 +119,6 @@ body {
   gap: 0.75rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--border);
-  cursor: grab;
   user-select: none;
 }
 
